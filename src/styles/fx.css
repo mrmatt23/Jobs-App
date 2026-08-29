@@ -1,0 +1,180 @@
+.os__grid,
+.os__scan,
+.os__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.os__grid {
+  background-image:
+    radial-gradient(ellipse 70% 45% at 20% 30%, rgba(77, 251, 255, 0.09), transparent 60%),
+    radial-gradient(ellipse 55% 40% at 78% 18%, rgba(181, 107, 255, 0.08), transparent 58%),
+    radial-gradient(ellipse 50% 35% at 60% 85%, rgba(255, 43, 214, 0.04), transparent 55%),
+    linear-gradient(rgba(77, 251, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(77, 251, 255, 0.035) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    56px 48px,
+    56px 48px;
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    28px 24px;
+  transform: perspective(900px) rotateX(58deg) scale(1.35) translateY(-12%);
+  transform-origin: center top;
+  opacity: 0.55;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent 88%);
+  animation: aurora-drift 24s ease-in-out infinite alternate;
+}
+
+.os__grid::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(77, 251, 255, 0.12), transparent 28%),
+    radial-gradient(circle at 70% 25%, rgba(181, 107, 255, 0.1), transparent 32%);
+  filter: blur(40px);
+  opacity: 0.7;
+  animation: aurora-drift 24s ease-in-out infinite alternate-reverse;
+}
+
+.os__scan {
+  z-index: 50;
+  opacity: 0.035;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(233, 246, 255, 0.55) 0,
+    rgba(233, 246, 255, 0.55) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: soft-light;
+  animation: scan-drift 8s linear infinite;
+}
+
+.os__vignette {
+  z-index: 51;
+  background: radial-gradient(
+    ellipse 75% 70% at 50% 45%,
+    transparent 42%,
+    rgba(2, 4, 10, 0.55) 100%
+  );
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.55);
+}
+
+@keyframes aurora-drift {
+  0% {
+    filter: hue-rotate(0deg) brightness(1);
+    background-position:
+      0% 0%,
+      0% 0%,
+      0% 0%,
+      0 0,
+      28px 24px;
+  }
+  100% {
+    filter: hue-rotate(18deg) brightness(1.08);
+    background-position:
+      8% 4%,
+      -6% 6%,
+      4% -4%,
+      0 12px,
+      28px 36px;
+  }
+}
+
+@keyframes scan-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 48px;
+  }
+}
+
+@keyframes orb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orb-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(255, 43, 214, 0.18),
+      0 0 28px rgba(77, 251, 255, 0.22);
+    opacity: 1;
+  }
+  50% {
+    box-shadow:
+      0 0 0 14px rgba(255, 43, 214, 0),
+      0 0 42px rgba(77, 251, 255, 0.35);
+    opacity: 0.88;
+  }
+}
+
+@keyframes presence-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(61, 255, 154, 0.45);
+    transform: scale(1);
+  }
+  55% {
+    box-shadow: 0 0 0 8px rgba(61, 255, 154, 0);
+    transform: scale(1.08);
+  }
+}
+
+@keyframes brand-underline {
+  0%,
+  100% {
+    background-position: 0% 50%;
+    opacity: 0.55;
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 1;
+  }
+}
+
+@keyframes feed-noise {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 0, 120px -80px;
+  }
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .os__grid,
+  .os__grid::before,
+  .os__scan,
+  .orb,
+  .orb::before,
+  .orb::after,
+  .orb--pulse,
+  .node--here,
+  .topbar__mark::after,
+  .feed::after,
+  .ticker {
+    animation: none !important;
+  }
+}
