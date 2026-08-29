@@ -27,6 +27,8 @@ export interface GithubPull {
   html_url: string;
   state: string;
   user: { login: string } | null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface GithubSnapshot {
@@ -91,7 +93,7 @@ export function commitsToActivity(
 export function pullsToActivity(pulls: GithubPull[], projectId: string): ActivityEvent[] {
   return pulls.map((pull) => ({
     id: `gh-pr-${pull.number}`,
-    at: Date.now(),
+    at: Date.parse(pull.updated_at || pull.created_at || "") || Date.now(),
     agentId: pull.user?.login?.toLowerCase().includes("matt")
       ? AI_AGENT_IDS.matt
       : AI_AGENT_IDS.grok,

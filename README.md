@@ -37,6 +37,25 @@ The **GitHub + AI** feed pulls real commits and open PRs from `mrmatt23/Jobs-App
 
 The board cannot read Cursor Cloud's private agent API from the browser. It can show GitHub, plus the AI names above.
 
+## Pulse live feed (Mission Control)
+
+Jobs-App does **not** own the Mission Control Floor look. Ink / DevonTe / Pulse own that painted office. This repo only publishes live task/presence JSON for Pulse to consume.
+
+While `npm run dev` (or `npm run preview`) is running:
+
+| Path | What |
+| --- | --- |
+| `GET /live.json` | Pulse schema (CORS `*`, `Cache-Control: no-store`) |
+| `GET /api/live.json` | Same document |
+
+`updated` is ISO. Each `agents[]` row is a real Jobs-App GitHub crew member or a live process on the machine serving the board. Harborview / Oakridge demo crew is omitted. `office` is whose desk they are at — always their own name unless a real visit is known (this feed never invents walks). Open GitHub PRs appear in `handoffs[]`. No progress percentages.
+
+Example:
+
+```bash
+curl -s http://localhost:5173/live.json
+```
+
 ## Also
 
 - Crew roster, job rail, add job/tech/task, export/import.
