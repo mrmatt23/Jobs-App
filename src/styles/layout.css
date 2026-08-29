@@ -105,6 +105,10 @@
     transform: translateX(0);
   }
 
+  .inspect-toggle {
+    display: inline-flex;
+  }
+
   .rail__label,
   .rail__code {
     display: none;
@@ -161,6 +165,7 @@
   }
 
   .rail__btn {
+    display: flex;
     flex: 0 0 auto;
     min-width: 72px;
     flex-direction: column;
