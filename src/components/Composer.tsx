@@ -42,7 +42,7 @@ export function Composer({ api }: { api: JobSiteApi }) {
 function JobForm({ api, onDone }: { api: JobSiteApi; onDone: () => void }) {
   const [name, setName] = useState("");
   const [site, setSite] = useState("");
-  const [floors, setFloors] = useState(6);
+  const [floors, setFloors] = useState(4);
 
   return (
     <form
@@ -62,14 +62,16 @@ function JobForm({ api, onDone }: { api: JobSiteApi; onDone: () => void }) {
         <input value={site} onChange={(event) => setSite(event.target.value)} placeholder="400 Industrial" />
       </label>
       <label>
-        Floors / levels
+        Levels in this job
         <input
           type="number"
           min={1}
           max={20}
+          step={1}
           value={floors}
           onChange={(event) => setFloors(Number(event.target.value))}
         />
+        <small>A shed can be 2. A tower can be 12. Anything from 1–20.</small>
       </label>
       <button type="submit" className="primary">
         Open job

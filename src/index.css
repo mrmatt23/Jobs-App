@@ -343,7 +343,7 @@ h1 { font-size: 1.45rem; letter-spacing: -0.03em; }
   border-radius: 8px;
   padding: 0.45rem 0.55rem;
 }
-.empty { color: var(--muted); padding: 1rem; }
+.form small { font-size: 0.75rem; color: var(--muted); }
 
 @media (max-width: 960px) {
   .layout { grid-template-columns: 1fr; }

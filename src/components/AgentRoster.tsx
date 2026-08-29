@@ -28,8 +28,9 @@ export function AgentRoster({ api }: { api: JobSiteApi }) {
                 <span className="agent-copy">
                   <strong>{agent.name}</strong>
                   <em>
-                    {WORK_KIND_META[agent.trade].label}
-                    {task ? ` · L${task.floor}` : ""}
+                    {task
+                      ? `${WORK_KIND_META[task.workKind].label} · L${task.floor}`
+                      : WORK_KIND_META[agent.trade].label}
                   </em>
                   <span className={`status status-${agent.status}`}>{actionFor(agent.id)}</span>
                 </span>

@@ -65,18 +65,44 @@ export function addProject(
     status: "planning",
     notes: input.notes?.trim() ?? "",
   };
-  const tasks: Task[] = Array.from({ length: floors }, (_, index) => ({
-    id: uid("task"),
-    projectId: project.id,
-    title: `Level ${index + 1} build-out`,
-    workKind: (["foundation", "framing", "electrical", "finishing"] as WorkKind[])[
-      Math.min(index, 3)
-    ],
-    floor: index + 1,
-    progress: 0,
-    status: "queued",
-    assigneeId: null,
-  }));
+  const tasks: Task[] = [];
+  for (let index = 0; index < floors; index += 1) {
+    const floor = index + 1;
+    if (floor === 1) {
+      tasks.push({
+        id: uid("task"),
+        projectId: project.id,
+        title: "Footings and slab",
+        workKind: "foundation",
+        floor,
+        progress: 0,
+        status: "queued",
+        assigneeId: null,
+      });
+    }
+    tasks.push({
+      id: uid("task"),
+      projectId: project.id,
+      title: `Level ${floor} framing`,
+      workKind: "framing",
+      floor,
+      progress: 0,
+      status: "queued",
+      assigneeId: null,
+    });
+    if (floor > 1) {
+      tasks.push({
+        id: uid("task"),
+        projectId: project.id,
+        title: `Level ${floor} rough-in`,
+        workKind: "electrical",
+        floor,
+        progress: 0,
+        status: "queued",
+        assigneeId: null,
+      });
+    }
+  }
   return {
     ...state,
     projects: [...state.projects, project],

@@ -43,7 +43,7 @@ export function currentFloorFill(progress: number, floors: number): number {
 }
 
 export function placeAmount(workKindProgressBias = 1): number {
-  return 5 * workKindProgressBias;
+  return 2 * workKindProgressBias;
 }
 
 export function projectStatusFromProgress(

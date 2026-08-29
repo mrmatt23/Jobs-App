@@ -46,30 +46,28 @@ describe("tickSimulation", () => {
     );
   });
 
-  it("assigns the next same-trade task after a floor is finished", () => {
+  it("will not hand an electrician a framing task", () => {
     const state = createSeedState();
-    const agent = state.agents.find((item) => item.id === "ag-1")!;
-    const task = state.tasks.find((item) => item.id === agent.taskId)!;
-    task.progress = 99;
-    task.status = "in_progress";
+    const dez = state.agents.find((item) => item.id === "ag-2")!;
+    const elec = state.tasks.find((item) => item.id === dez.taskId)!;
+    elec.progress = 100;
+    elec.status = "done";
+    dez.taskId = null;
+    const open = state.tasks.filter(
+      (task) =>
+        task.projectId === dez.projectId &&
+        task.status !== "done" &&
+        task.workKind === "electrical",
+    );
+    expect(open.length).toBeGreaterThan(0);
     const motions = createMotion(state.agents, state.tasks).map((motion) =>
-      motion.agentId === agent.id
-        ? {
-            ...motion,
-            phase: "place" as const,
-            phaseT: 0.6,
-            y: task.floor * 46,
-            x: 560,
-            carry: task.workKind,
-          }
+      motion.agentId === dez.id
+        ? { ...motion, phase: "idle" as const, y: 0, carry: null }
         : motion,
     );
     const result = tickSimulation(state, motions, [], 0.2);
-    const finished = result.state.tasks.find((item) => item.id === task.id)!;
-    expect(finished.status).toBe("done");
-    const updatedAgent = result.state.agents.find((item) => item.id === agent.id)!;
-    // Next tick they pick work; this tick clears the completed task.
-    expect(finished.assigneeId).toBeNull();
-    expect(updatedAgent.taskId === null || updatedAgent.taskId === task.id).toBe(true);
+    const updated = result.state.agents.find((item) => item.id === dez.id)!;
+    const assigned = result.state.tasks.find((item) => item.id === updated.taskId);
+    expect(assigned?.workKind).toBe("electrical");
   });
 });

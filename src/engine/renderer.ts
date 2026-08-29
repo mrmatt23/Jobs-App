@@ -31,13 +31,19 @@ function roundRect(
   ctx.closePath();
 }
 
+export function sceneScale(width: number, height: number, floors: number): number {
+  const worldH = Math.max(540, floors * WORLD.floorHeight + 190);
+  return Math.min(width / WORLD.width, height / worldH);
+}
+
 function worldToScreen(
   x: number,
   y: number,
   width: number,
   height: number,
+  floors: number,
 ): { x: number; y: number; scale: number } {
-  const scale = Math.min(width / WORLD.width, height / 620);
+  const scale = sceneScale(width, height, floors);
   const groundY = height - 78;
   return {
     x: x * scale + (width - WORLD.width * scale) / 2,
@@ -109,8 +115,9 @@ function drawMaterials(
   width: number,
   height: number,
   t: number,
+  floors: number,
 ): void {
-  const pile = worldToScreen(WORLD.pileX, 0, width, height);
+  const pile = worldToScreen(WORLD.pileX, 0, width, height, floors);
   const s = pile.scale;
   ctx.save();
   ctx.translate(pile.x - 50 * s, pile.y);
@@ -147,7 +154,7 @@ function drawCrane(
   t: number,
 ): void {
   if (floors < 4) return;
-  const base = worldToScreen(WORLD.towerX + 160, 0, width, height);
+  const base = worldToScreen(WORLD.towerX + 160, 0, width, height, floors);
   const s = base.scale;
   const mastH = (floors * WORLD.floorHeight + 80) * s;
   ctx.strokeStyle = "#f0a202";
@@ -188,7 +195,7 @@ function drawTower(
   const progress = projectProgress(tasks, project.floors);
   const done = completedFloorCount(progress, project.floors);
   const fill = currentFloorFill(progress, project.floors);
-  const origin = worldToScreen(WORLD.towerX, 0, width, height);
+  const origin = worldToScreen(WORLD.towerX, 0, width, height, project.floors);
   const s = origin.scale;
   const floorH = WORLD.floorHeight * s;
   const towerW = 168 * s;
@@ -394,9 +401,10 @@ function drawParticles(
   width: number,
   height: number,
   particles: Particle[],
+  floors: number,
 ): void {
   for (const particle of particles) {
-    const p = worldToScreen(particle.x, particle.y, width, height);
+    const p = worldToScreen(particle.x, particle.y, width, height, floors);
     ctx.globalAlpha = Math.max(0, particle.life / particle.maxLife);
     ctx.fillStyle = particle.color;
     ctx.beginPath();
@@ -410,8 +418,9 @@ function drawWorkLights(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
+  floors: number,
 ): void {
-  const left = worldToScreen(80, 0, width, height);
+  const left = worldToScreen(80, 0, width, height, floors);
   const s = left.scale;
   ctx.fillStyle = "#2a303c";
   ctx.fillRect(left.x, left.y - 70 * s, 5 * s, 70 * s);
@@ -432,14 +441,15 @@ export function drawScene(ctx: CanvasRenderingContext2D, frame: SceneFrame): voi
   const width = canvas.clientWidth || canvas.width;
   const height = canvas.clientHeight || canvas.height;
   const t = frame.now / 1000;
+  const floors = frame.project.floors;
 
   drawSky(ctx, width, height, t);
   drawGround(ctx, width, height);
-  drawWorkLights(ctx, width, height);
-  drawMaterials(ctx, width, height, t);
-  drawCrane(ctx, width, height, frame.project.floors, t);
+  drawWorkLights(ctx, width, height, floors);
+  drawMaterials(ctx, width, height, t, floors);
+  drawCrane(ctx, width, height, floors, t);
   drawTower(ctx, width, height, frame.project, frame.tasks, t);
-  drawParticles(ctx, width, height, frame.particles);
+  drawParticles(ctx, width, height, frame.particles, floors);
 
   const onSite = frame.agents.filter(
     (agent) => agent.projectId === frame.project.id,
@@ -449,7 +459,7 @@ export function drawScene(ctx: CanvasRenderingContext2D, frame: SceneFrame): voi
   for (const agent of onSite) {
     const motion = motionMap.get(agent.id);
     if (!motion) continue;
-    const p = worldToScreen(motion.x, motion.y, width, height);
+    const p = worldToScreen(motion.x, motion.y, width, height, floors);
     drawWorker(
       ctx,
       p.x,
@@ -464,7 +474,7 @@ export function drawScene(ctx: CanvasRenderingContext2D, frame: SceneFrame): voi
   for (const agent of onSite) {
     const motion = motionMap.get(agent.id);
     if (!motion) continue;
-    const p = worldToScreen(motion.x, motion.y, width, height);
+    const p = worldToScreen(motion.x, motion.y, width, height, floors);
     const task = frame.tasks.find((item) => item.id === agent.taskId);
     const action = task
       ? `${WORK_KIND_META[task.workKind].label} L${task.floor}`

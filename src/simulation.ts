@@ -47,8 +47,8 @@ export function createMotion(agents: Agent[], tasks: Task[]): AgentMotion[] {
   });
 }
 
-function nextOpenTask(agent: Agent, tasks: Task[]): Task | undefined {
-  const sameTrade = tasks
+export function nextOpenTask(agent: Agent, tasks: Task[]): Task | undefined {
+  return tasks
     .filter(
       (task) =>
         task.projectId === agent.projectId &&
@@ -56,16 +56,7 @@ function nextOpenTask(agent: Agent, tasks: Task[]): Task | undefined {
         task.workKind === agent.trade &&
         (task.assigneeId === null || task.assigneeId === agent.id),
     )
-    .sort((a, b) => a.floor - b.floor || a.progress - b.progress);
-  if (sameTrade[0]) return sameTrade[0];
-  return tasks
-    .filter(
-      (task) =>
-        task.projectId === agent.projectId &&
-        task.status !== "done" &&
-        (task.assigneeId === null || task.assigneeId === agent.id),
-    )
-    .sort((a, b) => a.floor - b.floor)[0];
+    .sort((a, b) => a.floor - b.floor || a.progress - b.progress)[0];
 }
 
 function actionLine(agent: Agent, task: Task, phase: AgentMotion["phase"]): string {
