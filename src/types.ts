@@ -8,15 +8,43 @@ export const WORK_KINDS = [
   "finishing",
   "inspection",
   "materials",
+  "code",
+  "review",
+  "test",
+  "research",
+  "debug",
+  "design",
 ] as const;
 
 export type WorkKind = (typeof WORK_KINDS)[number];
 
+export const SITE_WORK_KINDS: WorkKind[] = [
+  "foundation",
+  "framing",
+  "electrical",
+  "plumbing",
+  "hvac",
+  "roofing",
+  "finishing",
+  "inspection",
+  "materials",
+];
+
+export const AI_WORK_KINDS: WorkKind[] = [
+  "code",
+  "review",
+  "test",
+  "research",
+  "debug",
+  "design",
+];
+
+export type AgentKind = "tech" | "ai" | "human";
 export type AgentStatus = "idle" | "working" | "blocked" | "break";
-
 export type TaskStatus = "queued" | "in_progress" | "done" | "blocked";
-
 export type ProjectStatus = "planning" | "active" | "paused" | "complete";
+export type ProjectSource = "local" | "github";
+export type ActivitySource = "site" | "github" | "ai";
 
 export type MotionPhase =
   | "idle"
@@ -34,6 +62,7 @@ export interface Project {
   floors: number;
   status: ProjectStatus;
   notes: string;
+  source?: ProjectSource;
 }
 
 export interface Agent {
@@ -44,6 +73,8 @@ export interface Agent {
   status: AgentStatus;
   projectId: string | null;
   taskId: string | null;
+  kind: AgentKind;
+  model: string | null;
 }
 
 export interface Task {
@@ -63,6 +94,8 @@ export interface ActivityEvent {
   agentId: string;
   projectId: string;
   text: string;
+  source?: ActivitySource;
+  url?: string;
 }
 
 export interface AgentMotion {
@@ -112,4 +145,10 @@ export const WORK_KIND_META: Record<
   finishing: { label: "Finishing", verb: "trimming out", tool: "roller", hue: "#d38bd8" },
   inspection: { label: "Inspection", verb: "walking the floor", tool: "board", hue: "#9aa4b2" },
   materials: { label: "Materials", verb: "staging", tool: "crate", hue: "#8b6b4a" },
+  code: { label: "Code", verb: "writing", tool: "diff", hue: "#3ecfb2" },
+  review: { label: "Review", verb: "reviewing", tool: "pr", hue: "#5b9fd6" },
+  test: { label: "Test", verb: "testing", tool: "check", hue: "#9ae66e" },
+  research: { label: "Research", verb: "researching", tool: "notes", hue: "#d38bd8" },
+  debug: { label: "Debug", verb: "debugging", tool: "log", hue: "#ff6b6b" },
+  design: { label: "Design", verb: "shaping", tool: "layout", hue: "#f4d35e" },
 };

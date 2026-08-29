@@ -1,4 +1,5 @@
 import type { Agent, JobState, Project, Task } from "./types";
+import { GITHUB_PROJECT_ID, GITHUB_REPO, AI_AGENT_IDS } from "./github";
 
 function id(prefix: string, n: number): string {
   return `${prefix}-${n}`;
@@ -33,15 +34,73 @@ export function createSeedState(): JobState {
     notes: "Tenant improvement. Keep the occupied first floor clear.",
   };
 
+  const jobsApp: Project = {
+    id: GITHUB_PROJECT_ID,
+    name: "Jobs-App",
+    site: `github.com/${GITHUB_REPO}`,
+    floors: 6,
+    status: "active",
+    notes: "This repo. AI crew plus GitHub commits drive the tower.",
+    source: "github",
+  };
+
+  const tech = (
+    agent: Omit<Agent, "kind" | "model">,
+  ): Agent => ({ ...agent, kind: "tech", model: null });
+
   const agents: Agent[] = [
-    { id: id("ag", 1), name: "Maya Chen", trade: "framing", color: colors[0], status: "working", projectId: harbor.id, taskId: "task-h-5-frame" },
-    { id: id("ag", 2), name: "Dez Alvarez", trade: "electrical", color: colors[1], status: "working", projectId: harbor.id, taskId: "task-h-4-elec" },
-    { id: id("ag", 3), name: "Sam Okonkwo", trade: "plumbing", color: colors[2], status: "working", projectId: harbor.id, taskId: "task-h-4-plumb" },
-    { id: id("ag", 4), name: "Jules Park", trade: "finishing", color: colors[3], status: "working", projectId: harbor.id, taskId: "task-h-3-finish" },
-    { id: id("ag", 5), name: "Rio Santos", trade: "materials", color: colors[4], status: "working", projectId: harbor.id, taskId: "task-h-5-mat" },
-    { id: id("ag", 6), name: "Quinn Hale", trade: "inspection", color: colors[5], status: "working", projectId: harbor.id, taskId: "task-h-2-insp" },
-    { id: id("ag", 7), name: "Priya Nair", trade: "hvac", color: colors[6], status: "working", projectId: clinic.id, taskId: "task-c-2-hvac" },
-    { id: id("ag", 8), name: "Chris Bell", trade: "foundation", color: colors[7], status: "working", projectId: clinic.id, taskId: "task-c-1-found" },
+    tech({ id: id("ag", 1), name: "Maya Chen", trade: "framing", color: colors[0], status: "working", projectId: harbor.id, taskId: "task-h-5-frame" }),
+    tech({ id: id("ag", 2), name: "Dez Alvarez", trade: "electrical", color: colors[1], status: "working", projectId: harbor.id, taskId: "task-h-4-elec" }),
+    tech({ id: id("ag", 3), name: "Sam Okonkwo", trade: "plumbing", color: colors[2], status: "working", projectId: harbor.id, taskId: "task-h-4-plumb" }),
+    tech({ id: id("ag", 4), name: "Jules Park", trade: "finishing", color: colors[3], status: "working", projectId: harbor.id, taskId: "task-h-3-finish" }),
+    tech({ id: id("ag", 5), name: "Rio Santos", trade: "materials", color: colors[4], status: "working", projectId: harbor.id, taskId: "task-h-5-mat" }),
+    tech({ id: id("ag", 6), name: "Quinn Hale", trade: "inspection", color: colors[5], status: "working", projectId: harbor.id, taskId: "task-h-2-insp" }),
+    tech({ id: id("ag", 7), name: "Priya Nair", trade: "hvac", color: colors[6], status: "working", projectId: clinic.id, taskId: "task-c-2-hvac" }),
+    tech({ id: id("ag", 8), name: "Chris Bell", trade: "foundation", color: colors[7], status: "working", projectId: clinic.id, taskId: "task-c-1-found" }),
+    {
+      id: AI_AGENT_IDS.grok,
+      name: "Grok 4.6",
+      trade: "code",
+      color: "#3ecfb2",
+      status: "working",
+      projectId: jobsApp.id,
+      taskId: "task-app-2-code",
+      kind: "ai",
+      model: "cursor-grok-4.6-high",
+    },
+    {
+      id: AI_AGENT_IDS.claude,
+      name: "Claude",
+      trade: "debug",
+      color: "#d38bd8",
+      status: "idle",
+      projectId: jobsApp.id,
+      taskId: null,
+      kind: "ai",
+      model: "Claude",
+    },
+    {
+      id: AI_AGENT_IDS.grokbot,
+      name: "GrokBot",
+      trade: "research",
+      color: "#f0a202",
+      status: "idle",
+      projectId: jobsApp.id,
+      taskId: null,
+      kind: "ai",
+      model: "Grok",
+    },
+    {
+      id: AI_AGENT_IDS.matt,
+      name: "Matt",
+      trade: "review",
+      color: "#5b9fd6",
+      status: "idle",
+      projectId: jobsApp.id,
+      taskId: null,
+      kind: "human",
+      model: null,
+    },
   ];
 
   const harborTasks: Task[] = [
@@ -75,17 +134,51 @@ export function createSeedState(): JobState {
     { id: "task-c-4-finish", projectId: clinic.id, title: "Level 4 interiors", workKind: "finishing", floor: 4, progress: 0, status: "queued", assigneeId: null },
   ];
 
+  const appTasks: Task[] = [
+    { id: "task-app-1-repo", projectId: jobsApp.id, title: "Stand up the repo", workKind: "code", floor: 1, progress: 100, status: "done", assigneeId: null },
+    { id: "task-app-2-code", projectId: jobsApp.id, title: "Crew dashboard", workKind: "code", floor: 2, progress: 70, status: "in_progress", assigneeId: AI_AGENT_IDS.grok },
+    { id: "task-app-3-scene", projectId: jobsApp.id, title: "Tower scene", workKind: "design", floor: 3, progress: 55, status: "in_progress", assigneeId: null },
+    { id: "task-app-4-ui", projectId: jobsApp.id, title: "Roster and board", workKind: "review", floor: 4, progress: 40, status: "in_progress", assigneeId: null },
+    { id: "task-app-5-test", projectId: jobsApp.id, title: "Simulation tests", workKind: "test", floor: 5, progress: 35, status: "queued", assigneeId: null },
+    { id: "task-app-6-git", projectId: jobsApp.id, title: "GitHub live feed", workKind: "code", floor: 6, progress: 10, status: "in_progress", assigneeId: AI_AGENT_IDS.grok },
+  ];
+
   return {
-    projects: [harbor, clinic],
+    projects: [jobsApp, harbor, clinic],
     agents,
-    tasks: [...harborTasks, ...clinicTasks],
+    tasks: [...appTasks, ...harborTasks, ...clinicTasks],
     activity: [
+      {
+        id: "act-ai-1",
+        at: Date.now() - 12000,
+        agentId: AI_AGENT_IDS.grok,
+        projectId: jobsApp.id,
+        text: "Grok 4.6 writing the crew dashboard on this branch.",
+        source: "ai",
+      },
+      {
+        id: "act-ai-2",
+        at: Date.now() - 80000,
+        agentId: AI_AGENT_IDS.claude,
+        projectId: jobsApp.id,
+        text: "Claude idle — last work was Claude Code / keyring troubleshooting.",
+        source: "ai",
+      },
+      {
+        id: "act-ai-3",
+        at: Date.now() - 90000,
+        agentId: AI_AGENT_IDS.grokbot,
+        projectId: jobsApp.id,
+        text: "GrokBot idle — last work was Omarchy compatibility research.",
+        source: "ai",
+      },
       {
         id: "act-1",
         at: Date.now() - 40000,
         agentId: "ag-1",
         projectId: harbor.id,
         text: "Maya Chen started setting frame on level 5.",
+        source: "site",
       },
       {
         id: "act-2",
@@ -93,9 +186,10 @@ export function createSeedState(): JobState {
         agentId: "ag-2",
         projectId: harbor.id,
         text: "Dez Alvarez pulling homeruns on level 4.",
+        source: "site",
       },
     ],
-    selectedProjectId: harbor.id,
+    selectedProjectId: jobsApp.id,
     paused: false,
     speed: 1,
   };

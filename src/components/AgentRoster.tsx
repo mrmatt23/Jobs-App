@@ -26,8 +26,12 @@ export function AgentRoster({ api }: { api: JobSiteApi }) {
               >
                 <span className="agent-swatch" style={{ background: agent.color }} />
                 <span className="agent-copy">
-                  <strong>{agent.name}</strong>
+                  <strong>
+                    {agent.name}
+                    {agent.kind === "ai" ? " · AI" : agent.kind === "human" ? " · you" : ""}
+                  </strong>
                   <em>
+                    {agent.model ? `${agent.model} · ` : ""}
                     {task
                       ? `${WORK_KIND_META[task.workKind].label} · L${task.floor}`
                       : WORK_KIND_META[agent.trade].label}

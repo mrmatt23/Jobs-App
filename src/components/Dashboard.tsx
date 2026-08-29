@@ -33,7 +33,9 @@ export function Dashboard({ api }: { api: JobSiteApi }) {
         <div className="brand">
           <span className="mark" aria-hidden="true" />
           <div>
-            <p className="eyebrow">Jobs · for the crew</p>
+            <p className="eyebrow">
+              {project.source === "github" ? "Jobs · GitHub live" : "Jobs · for the crew"}
+            </p>
             <h1>{project.name}</h1>
             <p className="site-line">{project.site}</p>
           </div>
@@ -85,7 +87,11 @@ export function Dashboard({ api }: { api: JobSiteApi }) {
         <div className="stage">
           <SiteScene sceneRef={api.sceneRef} onSelectAgent={api.setSelectedAgentId} />
           <div className="legend">
-            {Object.entries(WORK_KIND_META).map(([kind, meta]) => (
+            {Object.entries(WORK_KIND_META)
+              .filter(([kind]) =>
+                api.selectedTasks.some((task: { workKind: string }) => task.workKind === kind),
+              )
+              .map(([kind, meta]) => (
               <span key={kind}>
                 <i style={{ background: meta.hue }} />
                 {meta.label}

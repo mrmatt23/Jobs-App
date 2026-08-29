@@ -15,6 +15,7 @@ import {
 import { agentActionLabel, createMotion, tickSimulation } from "./simulation";
 import type { AgentMotion, JobState, Particle, WorkKind } from "./types";
 import { WORK_KINDS } from "./types";
+import { applyGithubSnapshot, fetchGithubSnapshot } from "./github";
 import { projectProgress, tasksForProject } from "./lib/progress";
 
 const SAVE_MS = 800;
@@ -44,6 +45,7 @@ export function useJobSite() {
   const [motions, setMotions] = useState<AgentMotion[]>(() =>
     createMotion(state.agents, state.tasks),
   );
+  const [githubStatus, setGithubStatus] = useState<"loading" | "live" | "offline">("loading");
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
 
   const stateRef = useRef(state);
@@ -101,6 +103,32 @@ export function useJobSite() {
     return () => window.clearTimeout(handle);
   }, [state]);
 
+  const patch = useCallback((updater: (current: JobState) => JobState) => {
+    const next = updater(stateRef.current);
+    stateRef.current = next;
+    setState(next);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const pull = async () => {
+      try {
+        const snapshot = await fetchGithubSnapshot();
+        if (cancelled) return;
+        setGithubStatus("live");
+        patch((current) => applyGithubSnapshot(current, snapshot));
+      } catch {
+        if (!cancelled) setGithubStatus("offline");
+      }
+    };
+    void pull();
+    const timer = window.setInterval(() => void pull(), 45000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [patch]);
+
   const selectedProject = useMemo(
     () =>
       state.projects.find((project) => project.id === state.selectedProjectId) ??
@@ -123,12 +151,6 @@ export function useJobSite() {
     }
     return map;
   }, [state.projects, state.tasks]);
-
-  const patch = useCallback((updater: (current: JobState) => JobState) => {
-    const next = updater(stateRef.current);
-    stateRef.current = next;
-    setState(next);
-  }, []);
 
   const selectProject = useCallback((id: string) => {
     patch((current) => ({ ...current, selectedProjectId: id }));
@@ -236,6 +258,7 @@ export function useJobSite() {
     reset,
     download,
     upload,
+    githubStatus,
     kinds: WORK_KINDS,
     actionFor: (agentId: string) => {
       const agent = state.agents.find((item) => item.id === agentId);

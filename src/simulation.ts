@@ -159,13 +159,6 @@ export function tickSimulation(
       continue;
     }
 
-    if (agent.projectId !== state.selectedProjectId) {
-      motion.phase = "idle";
-      motion.y = 0;
-      motion.carry = null;
-      continue;
-    }
-
     let task = nextTasks.find((item) => item.id === agent.taskId);
     if (!task || task.status === "done" || task.projectId !== agent.projectId) {
       const open = nextOpenTask(agent, nextTasks);
@@ -242,25 +235,30 @@ export function tickSimulation(
         motion.phaseT += scaled;
         motion.walkCycle += scaled * 10;
         if (motion.phaseT >= PLACE_DURATION) {
-          const bump = placeAmount(task.workKind === "inspection" ? 0.7 : 1);
-          task.progress = clamp(task.progress + bump, 0, 100);
+          const liveGithub =
+            state.projects.find((item) => item.id === task.projectId)?.source === "github";
+          if (!liveGithub) {
+            const bump = placeAmount(task.workKind === "inspection" ? 0.7 : 1);
+            task.progress = clamp(task.progress + bump, 0, 100);
+            activity.unshift({
+              id: `act-${Date.now()}-${agent.id}`,
+              at: Date.now(),
+              agentId: agent.id,
+              projectId: task.projectId,
+              text: actionLine(agent, task, "place"),
+              source: agent.kind === "ai" ? "ai" : "site",
+            });
+            if (activity.length > 40) activity.length = 40;
+            if (task.progress >= 100) {
+              task.progress = 100;
+              task.status = "done";
+              task.assigneeId = null;
+              agent.taskId = null;
+            }
+          }
           placed = true;
           spawnPlaceDust(particles, motion.x, motion.y + 10);
-          activity.unshift({
-            id: `act-${Date.now()}-${agent.id}`,
-            at: Date.now(),
-            agentId: agent.id,
-            projectId: task.projectId,
-            text: actionLine(agent, task, "place"),
-          });
-          if (activity.length > 40) activity.length = 40;
           motion.carry = null;
-          if (task.progress >= 100) {
-            task.progress = 100;
-            task.status = "done";
-            task.assigneeId = null;
-            agent.taskId = null;
-          }
           motion.phase = "descend";
           motion.phaseT = 0;
         }

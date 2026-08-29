@@ -2,7 +2,7 @@ import { createSeedState } from "./seed";
 import type { Agent, JobState, Project, Task, WorkKind } from "./types";
 import { WORK_KINDS } from "./types";
 
-const STORAGE_KEY = "jobs-app-state-v1";
+const STORAGE_KEY = "jobs-app-state-v2";
 
 function uid(prefix: string): string {
   return `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
@@ -64,6 +64,7 @@ export function addProject(
     floors,
     status: "planning",
     notes: input.notes?.trim() ?? "",
+    source: "local",
   };
   const tasks: Task[] = [];
   for (let index = 0; index < floors; index += 1) {
@@ -123,6 +124,8 @@ export function addAgent(
     status: "idle",
     projectId: input.projectId,
     taskId: null,
+    kind: "tech",
+    model: null,
   };
   return { ...state, agents: [...state.agents, agent] };
 }

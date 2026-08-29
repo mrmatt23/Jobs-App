@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { WorkKind } from "../types";
-import { WORK_KIND_META, WORK_KINDS } from "../types";
+import { AI_WORK_KINDS, SITE_WORK_KINDS, WORK_KIND_META } from "../types";
 import type { JobSiteApi } from "../useJobSite";
 
 type Tab = "job" | "tech" | "task";
@@ -101,11 +101,20 @@ function TechForm({ api, onDone }: { api: JobSiteApi; onDone: () => void }) {
       <label>
         Trade
         <select value={trade} onChange={(event) => setTrade(event.target.value as WorkKind)}>
-          {WORK_KINDS.map((kind) => (
-            <option key={kind} value={kind}>
-              {WORK_KIND_META[kind].label}
-            </option>
-          ))}
+          <optgroup label="Jobsite">
+            {SITE_WORK_KINDS.map((kind) => (
+              <option key={kind} value={kind}>
+                {WORK_KIND_META[kind].label}
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="AI / software">
+            {AI_WORK_KINDS.map((kind) => (
+              <option key={kind} value={kind}>
+                {WORK_KIND_META[kind].label}
+              </option>
+            ))}
+          </optgroup>
         </select>
       </label>
       <label>
@@ -162,11 +171,20 @@ function TaskForm({ api, onDone }: { api: JobSiteApi; onDone: () => void }) {
       <label>
         Kind of work
         <select value={workKind} onChange={(event) => setWorkKind(event.target.value as WorkKind)}>
-          {WORK_KINDS.map((kind) => (
-            <option key={kind} value={kind}>
-              {WORK_KIND_META[kind].label}
-            </option>
-          ))}
+          <optgroup label="Jobsite">
+            {SITE_WORK_KINDS.map((kind) => (
+              <option key={kind} value={kind}>
+                {WORK_KIND_META[kind].label}
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="AI / software">
+            {AI_WORK_KINDS.map((kind) => (
+              <option key={kind} value={kind}>
+                {WORK_KIND_META[kind].label}
+              </option>
+            ))}
+          </optgroup>
         </select>
       </label>
       <label>

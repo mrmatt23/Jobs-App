@@ -2,7 +2,7 @@
 
 A jobs board for the crew — not a management dashboard.
 
-Open a job, see who is on it, what kind of work they are doing, and watch the **tower** go up as the work actually gets done. The building is the job. When framing, electrical, plumbing, and the rest move, the floors go in.
+Open a job, see who is on it, what kind of work they are doing, and watch the **tower** go up as the work actually gets done. The building is the job.
 
 ## Run it
 
@@ -18,12 +18,24 @@ npm test
 npm run build
 ```
 
-## What you get
+## What activity it shows
 
-- **Live site view** — techs walk the yard, climb scaffold, and place work. Each place advances the task, and the tower follows the job.
-- **Crew roster** — name, trade, current action, and task bar. Click a tech for break / job assignment.
-- **Jobs rail** — switch jobs; each has its own tower and progress.
-- **Add work** — new job, tech, or task, including the kind of work (foundation, framing, electrical, and so on).
-- **Export / import** — the board lives in this browser (`localStorage`). Download JSON if you want a copy.
+**Jobsite jobs** (Harborview, Oakridge, anything you add): live crew actions as they place work — framing, electrical, plumbing, HVAC, roofing, finishing, inspection, materials.
 
-Hold shift pauses the site. 1x / 2x / 4x is only for watching a shift faster — it does not change how work is counted.
+**Jobs-App (this GitHub repo):** AI and GitHub, not a fake jobsite log.
+
+| Who | What |
+| --- | --- |
+| **Grok 4.6** (`cursor-grok-4.6-high`) | Coding this dashboard. Commits from Cursor Agent map to Grok. |
+| **Claude** | Debug / Claude Code sessions. Idle unless that work is on the repo. |
+| **GrokBot** | Research (Omarchy / desktop). Idle unless that work is on the repo. |
+| **Matt** | Human review. Your GitHub commits. |
+
+The **GitHub + AI** feed pulls real commits and open PRs from `mrmatt23/Jobs-App` about every 45s. Click a line to open it on GitHub. That project's tower follows those commits.
+
+The board cannot read Cursor Cloud's private agent API from the browser. It can show GitHub, plus the AI names above.
+
+## Also
+
+- Crew roster, job rail, add job/tech/task, export/import.
+- Hold shift pauses the site. 1x / 2x / 4x only changes watch speed.
