@@ -82,11 +82,25 @@
 @media (max-width: 1279px) {
   .shell {
     grid-template-columns: 72px minmax(0, 1fr);
-    grid-template-rows: 64px minmax(0, 1fr) 72px;
+    grid-template-rows: auto minmax(0, 1fr) auto;
     grid-template-areas:
       "topbar topbar"
       "rail main"
       "command command";
+  }
+
+  .topbar {
+    height: auto;
+    min-height: 56px;
+    flex-wrap: wrap;
+    padding: 8px 14px;
+  }
+
+  .command {
+    height: auto;
+    min-height: 64px;
+    flex-wrap: wrap;
+    padding: 8px 14px;
   }
 
   .inspector {
@@ -107,6 +121,12 @@
 
   .inspect-toggle {
     display: inline-flex;
+    margin-left: auto;
+  }
+
+  .topbar__meta {
+    flex: 1 1 100%;
+    justify-content: flex-start;
   }
 
   .rail__label,
@@ -128,10 +148,34 @@
   }
 }
 
+@media (max-width: 1100px) {
+  .topbar__presence {
+    display: none;
+  }
+}
+
 @media (max-width: 767px) {
+  .topbar__presence,
+  .topbar__presence .chip {
+    display: none !important;
+  }
+
+  html,
+  body,
+  #root,
+  .os {
+    height: auto;
+    min-height: 100dvh;
+    overflow: auto;
+  }
+
+  body {
+    overflow: auto;
+  }
+
   .shell {
     grid-template-columns: 1fr;
-    grid-template-rows: 56px minmax(0, 1fr) 72px 64px;
+    grid-template-rows: auto minmax(320px, auto) auto auto;
     grid-template-areas:
       "topbar"
       "main"
@@ -139,8 +183,24 @@
       "rail";
     gap: 8px;
     padding: 8px;
-    height: 100%;
+    height: auto;
     min-height: 100dvh;
+  }
+
+  .topbar {
+    height: auto;
+    min-height: 52px;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .topbar__brand .kicker {
+    display: none;
+  }
+
+  .topbar__clock .kicker {
+    display: none;
   }
 
   .rail {
@@ -151,6 +211,9 @@
     gap: 6px;
     padding: 6px;
     align-items: stretch;
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
   }
 
   .rail__section {
@@ -182,13 +245,19 @@
     top: 64px;
     right: 8px;
     left: 8px;
-    bottom: 152px;
+    bottom: auto;
+    max-height: min(70dvh, 520px);
     width: auto;
   }
 
   .hero {
     grid-template-columns: 1fr;
     min-height: 0;
+  }
+
+  .main {
+    overflow: visible;
+    min-height: 50dvh;
   }
 
   .mosaic {
@@ -198,5 +267,21 @@
 
   .command {
     min-height: 64px;
+    height: auto;
+    flex-wrap: wrap;
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .cmd {
+    flex: 1 1 100%;
+  }
+
+  .command__chips {
+    flex: 1 1 100%;
+  }
+
+  .inspect-toggle {
+    display: inline-flex;
   }
 }

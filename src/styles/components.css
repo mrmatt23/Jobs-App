@@ -640,6 +640,8 @@
 
 .inspect-toggle {
   display: none;
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .command__chips {
@@ -657,7 +659,7 @@
   gap: 14px;
   padding: 0 16px;
   border-radius: var(--radius-sm);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .orb {
@@ -715,6 +717,8 @@
   border: 1px solid var(--stroke);
   background: rgba(4, 8, 16, 0.55);
   color: var(--text);
+  -webkit-text-fill-color: var(--text);
+  caret-color: var(--cyan);
   font-family: var(--font-ui);
   font-size: 14px;
   font-weight: 500;
@@ -791,5 +795,11 @@
 
   .card__name {
     font-size: 15px;
+  }
+}
+
+@media (max-width: 1279px) {
+  .inspect-toggle {
+    display: inline-flex;
   }
 }

@@ -27,6 +27,15 @@ export function Topbar({ entities, now, inspectOpen, onToggleInspect }: TopbarPr
           <div className="kicker">LUMEN HOUSE OS / NEURAL HABITAT CONTROL</div>
         </div>
       </div>
+      <button
+        type="button"
+        className={`chip ${inspectOpen ? "chip--cyan" : "chip--violet"} inspect-toggle`}
+        aria-label={inspectOpen ? "Close inspector" : "Open inspector"}
+        aria-pressed={inspectOpen}
+        onClick={onToggleInspect}
+      >
+        SYS
+      </button>
 
       <div className="topbar__meta">
         <div className="topbar__clock">
@@ -74,15 +83,6 @@ export function Topbar({ entities, now, inspectOpen, onToggleInspect }: TopbarPr
             {solarKw.toFixed(2)} kW
           </span>
         </div>
-        <button
-          type="button"
-          className={`chip ${inspectOpen ? "chip--cyan" : "chip--violet"} inspect-toggle`}
-          aria-label={inspectOpen ? "Close inspector" : "Open inspector"}
-          aria-pressed={inspectOpen}
-          onClick={onToggleInspect}
-        >
-          SYS
-        </button>
       </div>
     </header>
   );
