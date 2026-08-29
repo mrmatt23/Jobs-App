@@ -85,7 +85,7 @@ export function createSeedState(): JobState {
         at: Date.now() - 40000,
         agentId: "ag-1",
         projectId: harbor.id,
-        text: "Maya Chen started setting steel on level 5.",
+        text: "Maya Chen started setting frame on level 5.",
       },
       {
         id: "act-2",
