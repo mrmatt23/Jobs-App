@@ -1,0 +1,46 @@
+name: Publish Pulse live.json
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - cursor/multiagent-tower-dashboard-14c4
+    paths-ignore:
+      - live.json
+
+concurrency:
+  group: pulse-live-json
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx vite-node scripts/publish-live.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit live.json if GitHub activity changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add live.json
+          if git diff --staged --quiet; then
+            echo "live.json already current"
+            exit 0
+          fi
+          git commit -m "Update Pulse live.json from GitHub activity"
+          git push

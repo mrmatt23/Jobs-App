@@ -9,5 +9,5 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["vite.config.ts", "server/scanDevice.ts", "server/liveFeed.ts"]
+  "include": ["vite.config.ts", "server/scanDevice.ts", "server/liveFeed.ts", "scripts/publish-live.ts"]
 }

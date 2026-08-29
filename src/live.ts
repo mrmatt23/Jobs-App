@@ -1,5 +1,12 @@
 import { DEVICE_PROJECT_ID } from "./device";
-import { AI_AGENT_IDS, GITHUB_PROJECT_ID, type GithubPull } from "./github";
+import {
+  AI_AGENT_IDS,
+  GITHUB_PROJECT_ID,
+  applyGithubSnapshot,
+  type GithubPull,
+  type GithubSnapshot,
+} from "./github";
+import { createSeedState } from "./seed";
 import type { ActivityEvent, Agent, JobState } from "./types";
 import { WORK_KIND_META } from "./types";
 
@@ -152,4 +159,18 @@ export function assembleLiveFeed(
   }
 
   return { updated, agents, handoffs };
+}
+
+/** GitHub-backed Pulse document. No device processes, no jobsite placeholders. */
+export function buildGithubLiveFeed(snapshot: GithubSnapshot, now = Date.now()): PulseFeed {
+  const state = applyGithubSnapshot(createSeedState(), snapshot);
+  const feed = assembleLiveFeed(state, snapshot.pulls, now);
+  return {
+    ...feed,
+    agents: feed.agents.filter((agent) => agent.project === "Jobs-App"),
+  };
+}
+
+export function liveFeedSignature(feed: PulseFeed): string {
+  return JSON.stringify({ agents: feed.agents, handoffs: feed.handoffs });
 }

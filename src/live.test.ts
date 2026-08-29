@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { applyDeviceSnapshot, type DeviceSnapshot } from "./device";
 import { AI_AGENT_IDS, applyGithubSnapshot, type GithubSnapshot } from "./github";
-import { assembleLiveFeed } from "./live";
+import { assembleLiveFeed, buildGithubLiveFeed } from "./live";
 import { createSeedState } from "./seed";
 
 const device: DeviceSnapshot = {
@@ -130,5 +130,20 @@ describe("Pulse live feed", () => {
     expect(claude?.status).toBe("idle");
     expect(claude?.office).toBe("Claude");
     expect(claude?.current).toBe("Idle");
+  });
+});
+
+describe("GitHub-hosted Pulse document", () => {
+  it("publishes only Jobs-App GitHub rows (no device, no jobsite crew)", () => {
+    const live = buildGithubLiveFeed(github, Date.parse("2026-08-29T16:30:00Z"));
+    const names = live.agents.map((agent) => agent.name).sort();
+    expect(names).toEqual(["Claude", "Grok 4.6", "GrokBot", "Matt"]);
+    for (const agent of live.agents) {
+      expect(agent.project).toBe("Jobs-App");
+      expect(agent.office).toBe(agent.name);
+    }
+    expect(JSON.stringify(live)).not.toMatch(/\d+%/);
+    expect(live.handoffs[0]?.from).toBe("Grok 4.6");
+    expect(live.handoffs[0]?.to).toBe("Matt");
   });
 });

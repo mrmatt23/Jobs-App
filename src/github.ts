@@ -166,7 +166,12 @@ export function applyGithubSnapshot(state: JobState, snapshot: GithubSnapshot): 
 }
 
 export async function fetchGithubSnapshot(): Promise<GithubSnapshot> {
-  const headers = { Accept: "application/vnd.github+json" };
+  const headers: Record<string, string> = {
+    Accept: "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  if (token) headers.Authorization = `Bearer ${token}`;
   const commitUrls = [
     `https://api.github.com/repos/${GITHUB_REPO}/commits?sha=cursor/multiagent-tower-dashboard-14c4&per_page=20`,
     `https://api.github.com/repos/${GITHUB_REPO}/commits?per_page=20`,

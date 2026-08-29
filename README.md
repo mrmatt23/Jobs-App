@@ -41,19 +41,28 @@ The board cannot read Cursor Cloud's private agent API from the browser. It can 
 
 Jobs-App does **not** own the Mission Control Floor look. Ink / DevonTe / Pulse own that painted office. This repo only publishes live task/presence JSON for Pulse to consume.
 
-While `npm run dev` (or `npm run preview`) is running:
+**Public URL (no Vite, 24/7):** GitHub Pages is not enabled on this repo. Pulse should poll the committed file on this branch:
+
+```
+https://raw.githubusercontent.com/mrmatt23/Jobs-App/cursor/multiagent-tower-dashboard-14c4/live.json
+```
+
+`raw.githubusercontent.com` already sends `Access-Control-Allow-Origin: *`. Cache is GitHub’s (~5 minutes); this host cannot set `no-store`.
+
+A GitHub Action (`.github/workflows/publish-live.yml`) rebuilds that file from real `mrmatt23/Jobs-App` commits and open PRs. It runs on push to this branch, and on a 15-minute cron **once the workflow is on `main`** (GitHub only schedules workflows from the default branch). After merge, Pulse can keep the same path with `main` instead of the branch name.
+
+Harborview / Oakridge demo crew is omitted. Device rows (Vite, Cursor, Git) are local-dev only. `office` is always the agent’s own name. No progress percentages.
+
+Local Vite (optional, while `npm run dev` is running):
 
 | Path | What |
 | --- | --- |
-| `GET /live.json` | Pulse schema (CORS `*`, `Cache-Control: no-store`) |
+| `GET /live.json` | Same schema, plus this-device processes |
 | `GET /api/live.json` | Same document |
 
-`updated` is ISO. Each `agents[]` row is a real Jobs-App GitHub crew member or a live process on the machine serving the board. Harborview / Oakridge demo crew is omitted. `office` is whose desk they are at — always their own name unless a real visit is known (this feed never invents walks). Open GitHub PRs appear in `handoffs[]`. No progress percentages.
-
-Example:
-
 ```bash
-curl -s http://localhost:5173/live.json
+curl -s https://raw.githubusercontent.com/mrmatt23/Jobs-App/cursor/multiagent-tower-dashboard-14c4/live.json
+npm run publish-live   # regenerate live.json from GitHub
 ```
 
 ## Also
