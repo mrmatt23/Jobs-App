@@ -104,7 +104,7 @@ export const WORK_KIND_META: Record<
   { label: string; verb: string; tool: string; hue: string }
 > = {
   foundation: { label: "Foundation", verb: "pouring", tool: "shovel", hue: "#c4a574" },
-  framing: { label: "Framing", verb: "setting steel", tool: "beam", hue: "#e07a3d" },
+  framing: { label: "Framing", verb: "setting frame", tool: "beam", hue: "#e07a3d" },
   electrical: { label: "Electrical", verb: "pulling wire", tool: "coil", hue: "#f0c14a" },
   plumbing: { label: "Plumbing", verb: "running pipe", tool: "pipe", hue: "#5b9fd6" },
   hvac: { label: "HVAC", verb: "hanging duct", tool: "duct", hue: "#7ad0c6" },

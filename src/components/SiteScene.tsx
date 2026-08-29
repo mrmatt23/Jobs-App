@@ -1,5 +1,6 @@
 import { useEffect, useRef, type MouseEvent, type MutableRefObject } from "react";
 import { drawScene, sceneScale, type SceneFrame } from "../engine/renderer";
+import { WORLD } from "../simulation";
 
 interface Props {
   sceneRef: MutableRefObject<SceneFrame>;
@@ -63,9 +64,13 @@ export function SiteScene({ sceneRef, onSelectAgent }: Props) {
         if (!motion) return false;
         const scale = sceneScale(rect.width, rect.height, frame.project.floors);
         const groundY = rect.height - 78;
-        const sx = motion.x * scale + (rect.width - 1000 * scale) / 2;
+        const sx = motion.x * scale + (rect.width - WORLD.width * scale) / 2;
         const sy = groundY - motion.y * scale;
-        return Math.hypot(x - sx, y - sy + 18) < 28;
+        const onBody = Math.hypot(x - sx, y - sy + 8) < Math.max(36, 28 * scale);
+        const labelY = sy - 48 * scale;
+        const onLabel =
+          x >= sx - 80 && x <= sx + 80 && y >= labelY - 6 && y <= sy - 10 * scale;
+        return onBody || onLabel;
       });
     onSelectAgent(hit?.agent.id ?? null);
   };
