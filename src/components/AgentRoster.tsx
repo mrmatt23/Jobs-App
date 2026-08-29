@@ -1,4 +1,5 @@
 import type { JobSiteApi } from "../useJobSite";
+import { ANIMAL_LABEL, animalFor } from "../engine/animals";
 import { WORK_KIND_META } from "../types";
 
 export function AgentRoster({ api }: { api: JobSiteApi }) {
@@ -31,10 +32,11 @@ export function AgentRoster({ api }: { api: JobSiteApi }) {
                     {agent.kind === "ai" ? " · AI" : agent.kind === "human" ? " · you" : ""}
                   </strong>
                   <em>
-                    {agent.model ? `${agent.model} · ` : ""}
+                    {ANIMAL_LABEL[animalFor(agent.id)]}
+                    {agent.model ? ` · ${agent.model}` : ""}
                     {task
-                      ? `${WORK_KIND_META[task.workKind].label} · L${task.floor}`
-                      : WORK_KIND_META[agent.trade].label}
+                      ? ` · ${WORK_KIND_META[task.workKind].label} · L${task.floor}`
+                      : ` · ${WORK_KIND_META[agent.trade].label}`}
                   </em>
                   <span className={`status status-${agent.status}`}>{actionFor(agent.id)}</span>
                 </span>

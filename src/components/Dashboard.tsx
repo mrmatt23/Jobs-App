@@ -1,9 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { AgentRoster } from "./AgentRoster";
 import { ActivityFeed } from "./ActivityFeed";
 import { Composer } from "./Composer";
 import { ProjectRail } from "./ProjectRail";
 import { SiteScene } from "./SiteScene";
+import { OfficeScene } from "./OfficeScene";
+import { ANIMAL_LABEL, ANIMAL_SWATCH, animalFor } from "../engine/animals";
 import { WORK_KIND_META } from "../types";
 import type { JobSiteApi } from "../useJobSite";
 
@@ -17,6 +19,7 @@ export function Dashboard({ api }: { api: JobSiteApi }) {
     (agent) => agent.projectId === project?.id && agent.status !== "working",
   ).length;
   const fileRef = useRef<HTMLInputElement>(null);
+  const [view, setView] = useState<"tower" | "office">("office");
 
   if (!project) {
     return (
@@ -26,6 +29,14 @@ export function Dashboard({ api }: { api: JobSiteApi }) {
       </main>
     );
   }
+
+  const officeAnimals = [
+    ...new Set(
+      api.state.agents
+        .filter((agent) => agent.projectId === project.id)
+        .map((agent) => animalFor(agent.id)),
+    ),
+  ];
 
   return (
     <div className="shell">
@@ -59,12 +70,26 @@ export function Dashboard({ api }: { api: JobSiteApi }) {
           </div>
           <div>
             <dt>Levels</dt>
-            <dd>
-              {project.floors}
-            </dd>
+            <dd>{project.floors}</dd>
           </div>
         </dl>
         <div className="top-actions">
+          <div className="view-toggle" role="group" aria-label="Job view">
+            <button
+              type="button"
+              className={view === "office" ? "is-active" : ""}
+              onClick={() => setView("office")}
+            >
+              Office
+            </button>
+            <button
+              type="button"
+              className={view === "tower" ? "is-active" : ""}
+              onClick={() => setView("tower")}
+            >
+              Tower
+            </button>
+          </div>
           <button
             type="button"
             className={api.state.paused ? "primary" : ""}
@@ -89,18 +114,34 @@ export function Dashboard({ api }: { api: JobSiteApi }) {
 
       <div className="layout">
         <div className="stage">
-          <SiteScene sceneRef={api.sceneRef} onSelectAgent={api.setSelectedAgentId} />
+          {view === "office" ? (
+            <OfficeScene
+              sceneRef={api.sceneRef}
+              onSelectAgent={api.setSelectedAgentId}
+              paused={api.state.paused}
+              speed={api.state.speed}
+            />
+          ) : (
+            <SiteScene sceneRef={api.sceneRef} onSelectAgent={api.setSelectedAgentId} />
+          )}
           <div className="legend">
-            {Object.entries(WORK_KIND_META)
-              .filter(([kind]) =>
-                api.selectedTasks.some((task: { workKind: string }) => task.workKind === kind),
-              )
-              .map(([kind, meta]) => (
-              <span key={kind}>
-                <i style={{ background: meta.hue }} />
-                {meta.label}
-              </span>
-            ))}
+            {view === "office"
+              ? officeAnimals.map((animal) => (
+                  <span key={animal}>
+                    <i style={{ background: ANIMAL_SWATCH[animal] }} />
+                    {ANIMAL_LABEL[animal]}
+                  </span>
+                ))
+              : Object.entries(WORK_KIND_META)
+                  .filter(([kind]) =>
+                    api.selectedTasks.some((task: { workKind: string }) => task.workKind === kind),
+                  )
+                  .map(([kind, meta]) => (
+                    <span key={kind}>
+                      <i style={{ background: meta.hue }} />
+                      {meta.label}
+                    </span>
+                  ))}
           </div>
         </div>
         <aside className="side">
