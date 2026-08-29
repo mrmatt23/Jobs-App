@@ -1,0 +1,130 @@
+:root {
+  --bg-0: #04060c;
+  --bg-1: #070b16;
+  --panel: rgba(10, 18, 34, 0.62);
+  --panel-2: rgba(8, 14, 28, 0.82);
+  --stroke: rgba(120, 220, 255, 0.18);
+  --stroke-hot: rgba(77, 251, 255, 0.55);
+  --cyan: #4dfbff;
+  --cyan-dim: rgba(77, 251, 255, 0.14);
+  --violet: #b56bff;
+  --magenta: #ff2bd6;
+  --amber: #ffb020;
+  --lime: #3dff9a;
+  --red: #ff4d6d;
+  --text: #e9f6ff;
+  --muted: rgba(190, 220, 240, 0.58);
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --font-display: "Orbitron", sans-serif;
+  --font-ui: "Rajdhani", sans-serif;
+  --font-mono: "Share Tech Mono", monospace;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur: 220ms;
+  --glass-blur: blur(18px) saturate(140%);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root,
+.os {
+  height: 100%;
+  margin: 0;
+}
+
+html {
+  color-scheme: dark;
+  background: var(--bg-0);
+}
+
+body {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--text);
+  background: var(--bg-0);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+::selection {
+  background: var(--cyan-dim);
+  color: var(--text);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(77, 251, 255, 0.28);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(77, 251, 255, 0.48);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(77, 251, 255, 0.28) transparent;
+}
+
+.kicker {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+.readout {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--cyan);
+  font-variant-numeric: tabular-nums;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 767px) {
+  body {
+    overflow: auto;
+  }
+}
