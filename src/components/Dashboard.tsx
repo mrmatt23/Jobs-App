@@ -34,7 +34,11 @@ export function Dashboard({ api }: { api: JobSiteApi }) {
           <span className="mark" aria-hidden="true" />
           <div>
             <p className="eyebrow">
-              {project.source === "github" ? "Jobs · GitHub live" : "Jobs · for the crew"}
+              {project.source === "device"
+                ? "Jobs · this device"
+                : project.source === "github"
+                  ? "Jobs · GitHub live"
+                  : "Jobs · for the crew"}
             </p>
             <h1>{project.name}</h1>
             <p className="site-line">{project.site}</p>

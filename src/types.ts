@@ -43,8 +43,8 @@ export type AgentKind = "tech" | "ai" | "human";
 export type AgentStatus = "idle" | "working" | "blocked" | "break";
 export type TaskStatus = "queued" | "in_progress" | "done" | "blocked";
 export type ProjectStatus = "planning" | "active" | "paused" | "complete";
-export type ProjectSource = "local" | "github";
-export type ActivitySource = "site" | "github" | "ai";
+export type ProjectSource = "local" | "github" | "device";
+export type ActivitySource = "site" | "github" | "ai" | "device";
 
 export type MotionPhase =
   | "idle"

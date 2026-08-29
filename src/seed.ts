@@ -1,5 +1,6 @@
 import type { Agent, JobState, Project, Task } from "./types";
 import { GITHUB_PROJECT_ID, GITHUB_REPO, AI_AGENT_IDS } from "./github";
+import { DEVICE_PROJECT_ID } from "./device";
 
 function id(prefix: string, n: number): string {
   return `${prefix}-${n}`;
@@ -17,6 +18,15 @@ const colors = [
 ];
 
 export function createSeedState(): JobState {
+  const device: Project = {
+    id: DEVICE_PROJECT_ID,
+    name: "This device",
+    site: "scanning…",
+    floors: 6,
+    status: "active",
+    notes: "Live processes on the machine running this dashboard.",
+    source: "device",
+  };
   const harbor: Project = {
     id: "proj-harbor",
     name: "Harborview Tower",
@@ -144,7 +154,7 @@ export function createSeedState(): JobState {
   ];
 
   return {
-    projects: [jobsApp, harbor, clinic],
+    projects: [device, jobsApp, harbor, clinic],
     agents,
     tasks: [...appTasks, ...harborTasks, ...clinicTasks],
     activity: [
@@ -189,7 +199,7 @@ export function createSeedState(): JobState {
         source: "site",
       },
     ],
-    selectedProjectId: jobsApp.id,
+    selectedProjectId: device.id,
     paused: false,
     speed: 1,
   };

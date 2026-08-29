@@ -4,19 +4,18 @@ export function ActivityFeed({ api }: { api: JobSiteApi }) {
   const events = api.state.activity.filter(
     (event) => event.projectId === api.selectedProject?.id,
   );
-  const live = api.selectedProject?.source === "github";
+  const liveGithub = api.selectedProject?.source === "github";
+  const liveDevice = api.selectedProject?.source === "device";
+  const live = liveGithub || liveDevice;
+  const sync = liveDevice ? api.deviceStatus : api.githubStatus;
 
   return (
     <section className="panel feed">
       <header className="panel-head">
-        <h2>{live ? "GitHub + AI" : "On the tools"}</h2>
+        <h2>{liveDevice ? "This device" : liveGithub ? "GitHub + AI" : "On the tools"}</h2>
         {live ? (
-          <span className={`count sync-${api.githubStatus}`}>
-            {api.githubStatus === "live"
-              ? "live"
-              : api.githubStatus === "loading"
-                ? "syncing"
-                : "offline"}
+          <span className={`count sync-${sync}`}>
+            {sync === "live" ? "live" : sync === "loading" ? "scanning" : "offline"}
           </span>
         ) : null}
       </header>

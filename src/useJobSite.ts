@@ -16,6 +16,7 @@ import { agentActionLabel, createMotion, tickSimulation } from "./simulation";
 import type { AgentMotion, JobState, Particle, WorkKind } from "./types";
 import { WORK_KINDS } from "./types";
 import { applyGithubSnapshot, fetchGithubSnapshot } from "./github";
+import { applyDeviceSnapshot, fetchDeviceSnapshot } from "./device";
 import { projectProgress, tasksForProject } from "./lib/progress";
 
 const SAVE_MS = 800;
@@ -46,6 +47,7 @@ export function useJobSite() {
     createMotion(state.agents, state.tasks),
   );
   const [githubStatus, setGithubStatus] = useState<"loading" | "live" | "offline">("loading");
+  const [deviceStatus, setDeviceStatus] = useState<"loading" | "live" | "offline">("loading");
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
 
   const stateRef = useRef(state);
@@ -123,6 +125,26 @@ export function useJobSite() {
     };
     void pull();
     const timer = window.setInterval(() => void pull(), 45000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [patch]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const pull = async () => {
+      try {
+        const snapshot = await fetchDeviceSnapshot();
+        if (cancelled) return;
+        setDeviceStatus("live");
+        patch((current) => applyDeviceSnapshot(current, snapshot));
+      } catch {
+        if (!cancelled) setDeviceStatus("offline");
+      }
+    };
+    void pull();
+    const timer = window.setInterval(() => void pull(), 3000);
     return () => {
       cancelled = true;
       window.clearInterval(timer);
@@ -259,6 +281,7 @@ export function useJobSite() {
     download,
     upload,
     githubStatus,
+    deviceStatus,
     kinds: WORK_KINDS,
     actionFor: (agentId: string) => {
       const agent = state.agents.find((item) => item.id === agentId);

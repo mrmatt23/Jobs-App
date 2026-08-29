@@ -20,6 +20,8 @@ npm run build
 
 ## What activity it shows
 
+**This device (default):** processes actually running on the machine that serves the dashboard. Cloud agent, Vite, Cursor runtime, git, and shell commands show up as crew on the tower and refresh every few seconds. Run `npm run dev` on your laptop after cloning and this view is *your* machine.
+
 **Jobsite jobs** (Harborview, Oakridge, anything you add): live crew actions as they place work — framing, electrical, plumbing, HVAC, roofing, finishing, inspection, materials.
 
 **Jobs-App (this GitHub repo):** AI and GitHub, not a fake jobsite log.

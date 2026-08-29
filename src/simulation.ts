@@ -235,9 +235,9 @@ export function tickSimulation(
         motion.phaseT += scaled;
         motion.walkCycle += scaled * 10;
         if (motion.phaseT >= PLACE_DURATION) {
-          const liveGithub =
-            state.projects.find((item) => item.id === task.projectId)?.source === "github";
-          if (!liveGithub) {
+          const source = state.projects.find((item) => item.id === task.projectId)?.source;
+          const liveRemote = source === "github" || source === "device";
+          if (!liveRemote) {
             const bump = placeAmount(task.workKind === "inspection" ? 0.7 : 1);
             task.progress = clamp(task.progress + bump, 0, 100);
             activity.unshift({

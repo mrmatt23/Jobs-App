@@ -2,7 +2,7 @@ import { createSeedState } from "./seed";
 import type { Agent, JobState, Project, Task, WorkKind } from "./types";
 import { WORK_KINDS } from "./types";
 
-const STORAGE_KEY = "jobs-app-state-v2";
+const STORAGE_KEY = "jobs-app-state-v3";
 
 function uid(prefix: string): string {
   return `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
