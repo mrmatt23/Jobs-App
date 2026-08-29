@@ -1,0 +1,63 @@
+{
+  "updated": "2026-08-29T16:59:33.975Z",
+  "agents": [
+    {
+      "id": "ag-ai-grok",
+      "name": "Grok 4.6",
+      "role": "Code · cursor-grok-4.6-high",
+      "project": "Jobs-App",
+      "status": "working",
+      "office": "Grok 4.6",
+      "current": "Pushed · Publish Pulse live.json on GitHub for 24/7 polling",
+      "last_action": "Pushed · Publish Pulse live.json on GitHub for 24/7 polling",
+      "last_at": "2026-08-29T16:59:17.000Z"
+    },
+    {
+      "id": "ag-ai-claude",
+      "name": "Claude",
+      "role": "Debug · Claude",
+      "project": "Jobs-App",
+      "status": "idle",
+      "office": "Claude",
+      "current": "Idle",
+      "last_action": "",
+      "last_at": ""
+    },
+    {
+      "id": "ag-ai-grokbot",
+      "name": "GrokBot",
+      "role": "Research · Grok",
+      "project": "Jobs-App",
+      "status": "idle",
+      "office": "GrokBot",
+      "current": "Idle",
+      "last_action": "",
+      "last_at": ""
+    },
+    {
+      "id": "ag-ai-matt",
+      "name": "Matt",
+      "role": "Review",
+      "project": "Jobs-App",
+      "status": "idle",
+      "office": "Matt",
+      "current": "Idle",
+      "last_action": "PR #1 open: Pulse live.json from real Jobs-App data (Floor look untouched)",
+      "last_at": "2026-08-29T16:59:31.000Z"
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "Grok 4.6",
+      "to": "Matt",
+      "what": "PR #2 open: AETHER: futuristic Home Assistant dashboard demo",
+      "at": "2026-08-29T16:54:48Z"
+    },
+    {
+      "from": "Grok 4.6",
+      "to": "Matt",
+      "what": "PR #1 open: Pulse live.json from real Jobs-App data (Floor look untouched)",
+      "at": "2026-08-29T16:59:31Z"
+    }
+  ]
+}

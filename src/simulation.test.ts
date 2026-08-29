@@ -1,0 +1,73 @@
+import { describe, expect, it } from "vitest";
+import { createSeedState } from "./seed";
+import { createMotion, tickSimulation } from "./simulation";
+import { projectProgress, tasksForProject } from "./lib/progress";
+
+describe("tickSimulation", () => {
+  it("does not advance work while paused", () => {
+    const state = { ...createSeedState(), paused: true };
+    const motions = createMotion(state.agents, state.tasks);
+    const before = state.tasks.map((task) => task.progress);
+    const result = tickSimulation(state, motions, [], 1);
+    expect(result.state.tasks.map((task) => task.progress)).toEqual(before);
+    expect(result.placed).toBe(false);
+  });
+
+  it("lets a placing agent raise task and project progress", () => {
+    const state = createSeedState();
+    state.paused = false;
+    state.speed = 1;
+    const agent = state.agents.find((item) => item.id === "ag-1")!;
+    const task = state.tasks.find((item) => item.id === agent.taskId)!;
+    const start = task.progress;
+    const motions = createMotion(state.agents, state.tasks).map((motion) =>
+      motion.agentId === agent.id
+        ? {
+            ...motion,
+            phase: "place" as const,
+            phaseT: 0.54,
+            y: task.floor * 46,
+            x: 560,
+            carry: task.workKind,
+          }
+        : motion,
+    );
+    const result = tickSimulation(state, motions, [], 0.05);
+    const updated = result.state.tasks.find((item) => item.id === task.id)!;
+    expect(updated.progress).toBeGreaterThan(start);
+    expect(result.placed).toBe(true);
+    const project = result.state.projects.find((item) => item.id === task.projectId)!;
+    const progress = projectProgress(
+      tasksForProject(result.state.tasks, project.id),
+      project.floors,
+    );
+    expect(progress).toBeGreaterThan(
+      projectProgress(tasksForProject(state.tasks, project.id), project.floors),
+    );
+  });
+
+  it("will not hand an electrician a framing task", () => {
+    const state = createSeedState();
+    const dez = state.agents.find((item) => item.id === "ag-2")!;
+    const elec = state.tasks.find((item) => item.id === dez.taskId)!;
+    elec.progress = 100;
+    elec.status = "done";
+    dez.taskId = null;
+    const open = state.tasks.filter(
+      (task) =>
+        task.projectId === dez.projectId &&
+        task.status !== "done" &&
+        task.workKind === "electrical",
+    );
+    expect(open.length).toBeGreaterThan(0);
+    const motions = createMotion(state.agents, state.tasks).map((motion) =>
+      motion.agentId === dez.id
+        ? { ...motion, phase: "idle" as const, y: 0, carry: null }
+        : motion,
+    );
+    const result = tickSimulation(state, motions, [], 0.2);
+    const updated = result.state.agents.find((item) => item.id === dez.id)!;
+    const assigned = result.state.tasks.find((item) => item.id === updated.taskId);
+    expect(assigned?.workKind).toBe("electrical");
+  });
+});
